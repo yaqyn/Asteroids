@@ -1,75 +1,79 @@
+"""Keyboard-first arcade entry point with deterministic verification options."""
+
+import argparse
+import os
+import random
+from pathlib import Path
+
+os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
 import pygame
-import sys
-from player import Player
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from logger import log_state, log_event
-from asteroid import Asteroid
-from asteroidfield import AsteroidField
-from shot import Shot
-
-pygame.init()
-clock = pygame.time.Clock()
-dt = 0.0
+from game import Game
+from ui import Renderer
 
 
-
-def main():
-    print(f"starting asteroids with pygame version: {pygame.version.ver}")
-    print(f"screen width: {SCREEN_WIDTH}\nscreen height: {SCREEN_HEIGHT}")
-    
-    
-    
-
-    asteroids = pygame.sprite.Group()
-    shots = pygame.sprite.Group()
-    updatable = pygame.sprite.Group()
-    drawable = pygame.sprite.Group()
-    Player.containers = (updatable, drawable)
-    Asteroid.containers = (asteroids, updatable, drawable)
-    Shot.containers = (shots, updatable, drawable)
-    x = SCREEN_WIDTH / 2
-    y = SCREEN_HEIGHT / 2
-    player = Player(x, y)
-    AsteroidField.containers = updatable
-    asteroid_field = AsteroidField()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    while True:
-        log_state()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return
-        dt = clock.tick(60) / 1000
-        updatable.update(dt)
-        for asteroid in asteroids:
-            if asteroid.collides_with(player):
-                log_event("player_hit")
-                print("Game over!")
-                sys.exit()
-            for shot in shots:
-                if shot.collides_with(asteroid):
-                    log_event("asteroid_shot")
-                    shot.kill()
-                    asteroid.split()
-                        
-        screen.fill("black")
-        for object in drawable:
-            object.draw(screen)
-        pygame.display.flip()
-        
+def positive_int(value):
+    result = int(value)
+    if result < 1:
+        raise argparse.ArgumentTypeError("must be positive")
+    return result
 
 
-
-
-
-
-
-
-
-
-
-
-
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description="Pilot a wireframe ship through an asteroid field"
+    )
+    parser.add_argument("--fullscreen", action="store_true")
+    parser.add_argument(
+        "--reduced-motion",
+        action="store_true",
+        help="Disable particles and ship blinking",
+    )
+    parser.add_argument("--seed", type=int, help="Deterministic random seed")
+    parser.add_argument(
+        "--frames", type=positive_int, help="Exit after N frames (verification)"
+    )
+    parser.add_argument("--screenshot", type=Path, help="Save the final rendered frame")
+    parser.add_argument("--start", action="store_true", help="Skip the title screen")
+    parser.add_argument(
+        "--no-save", action="store_true", help="Keep best scores in memory only"
+    )
+    args = parser.parse_args(argv)
+    if args.seed is not None:
+        random.seed(args.seed)
+    pygame.display.init()
+    pygame.font.init()
+    try:
+        flags = pygame.FULLSCREEN if args.fullscreen else 0
+        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), flags)
+        pygame.display.set_caption("Asteroids | Dodge / Split / Survive")
+        clock = pygame.time.Clock()
+        game = Game(reduced_motion=args.reduced_motion, save_scores=not args.no_save)
+        if args.start:
+            game.reset()
+        renderer = Renderer()
+        running, frames = True, 0
+        while running:
+            dt = clock.tick(60) / 1000
+            for event in pygame.event.get():
+                if not game.handle_event(event):
+                    running = False
+            if not running:
+                break
+            game.update(dt)
+            renderer.draw(screen, game)
+            pygame.display.flip()
+            frames += 1
+            if args.frames and frames >= args.frames:
+                break
+        if args.screenshot:
+            args.screenshot.parent.mkdir(parents=True, exist_ok=True)
+            pygame.image.save(screen, str(args.screenshot))
+        game.save_best()
+        return 0
+    finally:
+        pygame.quit()
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

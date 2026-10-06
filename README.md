@@ -1,28 +1,30 @@
-![Asteroids — animated project cover](readme-assets/cover.gif)
+![Asteroids — a mint starfighter weaving through coral rocks on an illustrated space chart](readme-assets/cover.png)
 
 # Asteroids
 
 **A keyboard-controlled arcade game built with Python and Pygame.**
 
-Pilot a wireframe ship through an asteroid field. Rotate, move, and fire at incoming rocks; a collision with your ship ends the run. The game uses a 1280 × 720 window and a loop capped at 60 frames per second.
+Pilot a wireframe ship through an asteroid field. Rotate, move, and fire at incoming rocks; survive with three lives and brief protection after each hit. Earn points by splitting rocks, with difficulty increasing every 20 seconds. The game uses a 1280 × 720 window and a loop capped at 60 frames per second.
 
 ## <img src="readme-assets/run.svg" width="24" height="24" alt=""> Enter the asteroid field
 
 Requires **Python 3.13+**, **uv**, and a graphical desktop.
 
 ```bash
-uv sync
-uv run main.py
+./launch
 ```
 
 | Key | Action |
 | --- | --- |
-| **W / S** | Move forward / backward |
-| **A / D** | Rotate left / right |
+| **W / S** or **Up / Down** | Move forward / backward |
+| **A / D** or **Left / Right** | Rotate left / right |
 | **Space** | Shoot |
-| Close window | Exit |
+| **Enter** | Start, resume, or play again |
+| **P** | Pause / resume |
+| **R** | Restart after game over |
+| **Escape** or close window | Exit |
 
-![Rendered ship and asteroid scene using the project's Pygame draw methods](readme-assets/scene.png)
+![Rendered gameplay preview using the project's current game and renderer](readme-assets/gameplay.png)
 
 <sub>Deterministic scene rendered from the project’s sprite classes; a visual preview rather than a recorded gameplay session.</sub>
 
@@ -34,7 +36,9 @@ Sprite groups coordinate updates and drawing. Circle-based collision checks conn
 
 | Source | Responsibility |
 | --- | --- |
-| `main.py` | Window, loop, sprite groups, and collision handling |
+| `main.py` | Window, event loop, and launch options |
+| `game.py` | State transitions, lives, scoring, collisions, and persistence |
+| `ui.py` | Shared HUD, menus, starfield, and reduced-motion presentation |
 | `player.py` · `shot.py` | Ship controls and projectiles |
 | `asteroid.py` · `asteroidfield.py` | Rocks, splitting, and spawning |
 | `circleshape.py` | Shared circular shape and collision logic |
@@ -42,7 +46,40 @@ Sprite groups coordinate updates and drawing. Circle-based collision checks conn
 
 ## <img src="readme-assets/learn.svg" width="24" height="24" alt=""> What this project teaches
 
-Object-oriented design, vector movement, delta time, sprite groups, and collision detection. This is a compact course game: the current loop exits on a player hit, with no score screen or restart menu.
+Object-oriented design, vector movement, delta time, sprite groups, collision detection, state transitions, and resilient score persistence.
+
+## Gameplay and options
+
+The launcher uses uv to prepare the Python environment automatically and works
+from another directory when invoked by absolute path. `uv run main.py` remains
+available. The ship wraps around screen edges; shots expire after 1.6 seconds,
+and off-screen rocks are removed. Small rocks score 100 points, medium rocks 50,
+and large rocks 20. Each hit removes one life; respawns grant two seconds of
+protection. Losing desktop focus pauses the run.
+
+```bash
+./launch --fullscreen
+./launch --reduced-motion
+```
+
+Reduced motion disables particles and ship blinking; a steady ring still shows
+protection. The best score is saved on game over or exit under
+`$XDG_STATE_HOME/asteroids/best.json` (default `~/.local/state/asteroids/best.json`).
+If saving fails, the best remains in memory and the menu shows a message.
+The game has no audio and does not require external media downloads.
+
+## Verify without a graphical desktop
+
+```bash
+uv run python -m unittest -v
+SDL_VIDEODRIVER=dummy ./launch --start --seed 7 --frames 120 --no-save
+```
+
+Tests cover scoring, splitting, lives, invulnerability, pause/restart, focus loss,
+object cleanup, score-save recovery, and rendering every screen. GitHub Actions
+runs the tests and a deterministic headless launch. Optional `--screenshot PATH`
+saves the final frame; `--no-save` keeps verification runs from writing scores.
+[Design context](DESIGN.md) documents the shared presentation and controls.
 
 ---
 

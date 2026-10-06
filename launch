@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+project_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+if ! command -v uv >/dev/null 2>&1; then
+    printf '%s\n' 'Error: uv is required. Install it from https://docs.astral.sh/uv/.' >&2
+    exit 127
+fi
+exec uv run --project "$project_dir" python "$project_dir/main.py" "$@"

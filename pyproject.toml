@@ -1,5 +1,5 @@
 [project]
-name = "orbit"
+name = "orbit-asteroids-game"
 version = "0.1.0"
 description = "A keyboard-first Orbit arcade game with lives, scores, and restart"
 readme = "README.md"

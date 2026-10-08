@@ -1,6 +1,6 @@
 ![Orbit — a mint starfighter weaving through coral rocks on an illustrated space chart](readme-assets/cover.png)
 
-# Orbit
+# Orbit — Asteroids Game
 
 **A keyboard-controlled arcade game built with Python and Pygame.**
 

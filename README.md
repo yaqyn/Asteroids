@@ -1,6 +1,6 @@
-![Asteroids — a mint starfighter weaving through coral rocks on an illustrated space chart](readme-assets/cover.png)
+![Orbit — a mint starfighter weaving through coral rocks on an illustrated space chart](readme-assets/cover.png)
 
-# Asteroids
+# Orbit
 
 **A keyboard-controlled arcade game built with Python and Pygame.**
 
@@ -84,3 +84,5 @@ saves the final frame; `--no-save` keeps verification runs from writing scores.
 ---
 
 Built by **[Abdulrahman M. Yaqyn](https://yaqyn.dev)** through the [Boot.dev](https://www.boot.dev) curriculum.
+
+Best scores retain the legacy `$XDG_STATE_HOME/asteroids/best.json` location (default `~/.local/state/asteroids/best.json`) so existing saves survive the Orbit rename.

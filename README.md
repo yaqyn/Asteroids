@@ -2,6 +2,9 @@
 
 # Orbit — Asteroids Game
 
+> **Learning Journey Projects · Boot.dev**
+> A student project developed through the Boot.dev curriculum and extended through hands-on practice.
+
 **A keyboard-controlled arcade game built with Python and Pygame.**
 
 Pilot a wireframe ship through an asteroid field. Rotate, move, and fire at incoming rocks; survive with three lives and brief protection after each hit. Earn points by splitting rocks, with difficulty increasing every 20 seconds. The game uses a 1280 × 720 window and a loop capped at 60 frames per second.

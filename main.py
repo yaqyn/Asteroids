@@ -46,7 +46,7 @@ def main(argv=None):
     try:
         flags = pygame.FULLSCREEN if args.fullscreen else 0
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), flags)
-        pygame.display.set_caption("Asteroids | Dodge / Split / Survive")
+        pygame.display.set_caption("Orbit | Dodge / Split / Survive")
         clock = pygame.time.Clock()
         game = Game(reduced_motion=args.reduced_motion, save_scores=not args.no_save)
         if args.start:

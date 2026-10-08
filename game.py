@@ -14,6 +14,7 @@ from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_LIVES, RESPAWN_SECONDS
 
 
 def score_path():
+    # Keep the original storage location to preserve scores after the Orbit rename.
     return (
         Path(os.getenv("XDG_STATE_HOME", str(Path.home() / ".local/state")))
         / "asteroids/best.json"

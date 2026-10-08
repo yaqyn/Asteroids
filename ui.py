@@ -87,7 +87,7 @@ class Renderer:
             overlay.fill((16, 19, 39, 205))
             screen.blit(overlay, (0, 0))
             titles = {
-                "title": "ASTEROIDS",
+                "title": "ORBIT",
                 "paused": "PAUSED",
                 "game_over": "GAME OVER",
             }

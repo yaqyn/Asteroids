@@ -1,0 +1,2 @@
+Mode: built-in imagegen edit
+Use case: text-localization. Edit target: supplied cover. Replace only large title "ASTEROIDS" with "ORBIT", perfectly legible matching original typography and placement. Preserve smaller tagline verbatim, illustration, colors, textures, framing and aspect ratio. No other changes.

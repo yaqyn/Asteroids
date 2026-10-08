@@ -1,4 +1,4 @@
-![Orbit — a mint starfighter weaving through coral rocks on an illustrated space chart](readme-assets/cover.png)
+![Orbit — a mint starfighter weaving through coral rocks on an illustrated space chart](readme-assets/cover-renamed.png)
 
 # Orbit — Asteroids Game
 
